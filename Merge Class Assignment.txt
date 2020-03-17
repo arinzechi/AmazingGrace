@@ -1,0 +1,63 @@
+--This is the create table statement
+CREATE TABLE TableStaging(
+ID INT NOT NULL,
+Name nvarchar (50) NOT NULL,
+DateOfBirth DATE NOT NULL,
+);
+
+--To insert values into the table
+INSERT INTO TableStaging VALUES (121, 'John', '1970/07/21')
+INSERT INTO TableStaging VALUES (131, 'Mary', '1973/01/30')
+INSERT INTO TableStaging VALUES (141, 'Peter', '1989/03/11')
+INSERT INTO TableStaging VALUES (151, 'Andrew', '1983/08/15')
+INSERT INTO TableStaging VALUES (161, 'James', '1980/05/21')
+
+--Query to visualize how the table looks like.
+SELECT * FROM TableStaging
+
+--I duplicated the TableStaging table into the TableTarget table with the same values.
+SELECT * 
+INTO TableTarget
+FROM TableStaging
+
+--Insert a new row into the staging table
+INSERT INTO TableStaging VALUES ( 171, 'Mark', '1984/02/15')
+
+--Update 2 rows
+
+UPDATE TableStaging SET Name = 'Joanna'
+WHERE ID='121';
+
+UPDATE TableStaging SET Name = 'Andrea'
+WHERE ID='151';
+
+/*Create a merge statement*/
+MERGE INTO TableTarget AS T
+USING TableStaging AS S
+ON T.ID = S.ID
+WHEN MATCHED THEN 
+UPDATE SET T.Name = S. Name;
+
+
+--Stored Procedure
+CREATE PROCEDURE spCustomerIdentity
+AS
+MERGE INTO TableTarget AS T
+USING TableStaging AS S
+ON T.ID = S.ID
+WHEN MATCHED THEN 
+UPDATE SET T.Name = S. Name;
+GO
+
+--Delete the staging table
+DROP TABLE TableTarget
+
+--Execute the stored procedure
+spCustomerIdentity
+
+
+
+
+
+
+
